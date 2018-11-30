@@ -1,6 +1,6 @@
 import 'package:postgres/postgres.dart';
 import 'dart:async';
-import './dataType.dart';
+import './data_type.dart';
 
 class PG {
 
