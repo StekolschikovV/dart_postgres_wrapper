@@ -60,6 +60,12 @@ class PG {
     await connection.query(queryStr);
   }
 
+  Future<int> getCount() async {
+    String queryStr = 'SELECT COUNT(*) FROM $tab;';
+    List<List> res = await connection.query(queryStr);
+    return res[0][0];
+  }
+
   Future<List> select({String what = '*', var where = false, var whereIdFrom = false, var whereIdTo = false}) async {
     String queryStr = "SELECT $what FROM $tab ${where != false ? where : '' }${whereIdFrom != false && whereIdTo != false ? 'WHERE id >= ${whereIdFrom} AND id <= ${whereIdTo}' : ''};";
     List<List<dynamic>> res = await connection.query(queryStr);

@@ -1,6 +1,6 @@
 name: dart_postgres_wrapper
 description: A simple database wrapper.
-version: 1.0.0
+version: 1.0.2
 homepage: https://stekolschikovv.github.io
 author: Vitaly Stekolschikov  <v.a.stekolschikov@gmail.com>
 
