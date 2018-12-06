@@ -66,6 +66,29 @@ class PG {
     return res[0][0];
   }
 
+  Future<List> groupBy(List<String> col,{List<String> sum}) async {
+    String colStr = '';
+    col.forEach((e){
+      if(colStr.length > 0)
+        colStr += ', ';
+      colStr += e;
+    });
+    String sumStr = '';
+    if(sum != null)
+      sum.forEach((e){
+        sumStr += ', sum($e)';
+      });
+
+
+//    infovizion=# select magazin, sum(summaprodazhtyisrub), sum(natsenkatyisrub) from datatoimport where id <= 10 group by magazin;
+
+
+    String queryStr = "SELECT $colStr $sumStr FROM $tab group by $colStr;";
+    print(queryStr);
+    List<List<dynamic>> res = await connection.query(queryStr);
+    return res;
+  }
+
   Future<List> select({String what = '*', var where = false, var whereIdFrom = false, var whereIdTo = false}) async {
     String queryStr = "SELECT $what FROM $tab ${where != false ? where : '' }${whereIdFrom != false && whereIdTo != false ? 'WHERE id >= ${whereIdFrom} AND id <= ${whereIdTo}' : ''};";
     List<List<dynamic>> res = await connection.query(queryStr);

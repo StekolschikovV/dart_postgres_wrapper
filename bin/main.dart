@@ -14,4 +14,5 @@ main(List<String> arguments) async {
   PG pg = new PG(host, pgPort, db, dbUser, dbPassword, tab);
   await pg.createConnection();
 
+//  print(await pg.groupBy(['magazin'], sum: ['summaprodazhtyisrub', 'natsenkatyisrub']));
 }
