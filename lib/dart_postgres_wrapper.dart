@@ -55,6 +55,11 @@ class PG {
     await connection.query(queryStr);
   }
 
+  Future<List> getTabInfo() async {
+    String queryStr = "SELECT column_name, column_default, data_type FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$tab';";
+    return await connection.query(queryStr);
+  }
+
   void setColType(String col, String type) async {
     String queryStr = "ALTER TABLE $tab ALTER COLUMN $col SET DATA TYPE $type USING $col::$type;";
     await connection.query(queryStr);
@@ -66,7 +71,7 @@ class PG {
     return res[0][0];
   }
 
-  Future<List> groupBy(List<String> col,{List<String> sum}) async {
+  Future<List> groupBy(List col,{List sum, bool where = false, int whereIdFrom, int whereIdTo, String groupBy}) async {
     String colStr = '';
     col.forEach((e){
       if(colStr.length > 0)
@@ -78,19 +83,19 @@ class PG {
       sum.forEach((e){
         sumStr += ', sum($e)';
       });
-
-
-//    infovizion=# select magazin, sum(summaprodazhtyisrub), sum(natsenkatyisrub) from datatoimport where id <= 10 group by magazin;
-
-
-    String queryStr = "SELECT $colStr $sumStr FROM $tab group by $colStr;";
+    String whereStr = '';
+    if(where){
+      whereStr = 'WHERE id >= ${whereIdFrom} AND id <= ${whereIdTo}';
+    }
+    String queryStr = "SELECT $colStr $sumStr FROM $tab $whereStr group by ${groupBy == null ? colStr : groupBy};";
     print(queryStr);
     List<List<dynamic>> res = await connection.query(queryStr);
     return res;
   }
 
   Future<List> select({String what = '*', var where = false, var whereIdFrom = false, var whereIdTo = false}) async {
-    String queryStr = "SELECT $what FROM $tab ${where != false ? where : '' }${whereIdFrom != false && whereIdTo != false ? 'WHERE id >= ${whereIdFrom} AND id <= ${whereIdTo}' : ''};";
+    String queryStr = "SELECT $what FROM $tab ${whereIdFrom != false && whereIdTo != false ? 'WHERE id >= ${whereIdFrom} AND id <= ${whereIdTo}' : ''};";
+    print(queryStr);
     List<List<dynamic>> res = await connection.query(queryStr);
     return res;
   }
